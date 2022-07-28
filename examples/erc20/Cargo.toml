@@ -1,5 +1,5 @@
 [package]
-name = "token"
+name = "erc20"
 version = "0.1.0"
 edition = "2021"
 publish = false
@@ -12,7 +12,7 @@ minicbor = { version = "0.18", features = ["half", "derive"] }
 wee_alloc = { version = "0.4", default-features = false }
 
 [lib]
-name = "token"
+name = "erc20"
 crate-type = ["cdylib", "rlib"]
 
 [profile.release]

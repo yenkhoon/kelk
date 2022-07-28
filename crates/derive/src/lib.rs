@@ -123,6 +123,7 @@ pub fn derive_codec(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
         }
     };
 
+    //panic!("{}" , expanded.to_string());
     // Hand the output tokens back to the compiler.
     proc_macro::TokenStream::from(expanded)
 }

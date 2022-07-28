@@ -174,14 +174,14 @@ mod tests {
     #[test]
     fn test_bst() {
         let storage = mock_storage(1024);
-        let mut bst_1 = StorageBST::<i32, i32>::create(&storage).unwrap();
+        let mut bst_1 = StorageBST::<i32, i64>::create(&storage).unwrap();
 
         assert_eq!(None, bst_1.insert(1, 10).unwrap());
         assert_eq!(None, bst_1.insert(3, 30).unwrap());
         assert_eq!(None, bst_1.insert(2, 20).unwrap());
         assert_eq!(Some(10), bst_1.insert(1, 100).unwrap());
 
-        let bst_2 = StorageBST::<i32, i32>::load(&storage, bst_1.offset()).unwrap();
+        let bst_2 = StorageBST::<i32, i64>::load(&storage, bst_1.offset()).unwrap();
         assert_eq!(Some(20), bst_2.find(&2).unwrap());
         assert_eq!(None, bst_2.find(&4).unwrap());
         assert_eq!(Some(30), bst_2.find(&3).unwrap());

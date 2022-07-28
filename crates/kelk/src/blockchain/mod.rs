@@ -40,8 +40,8 @@ impl Blockchain {
         Ok(self.api.get_param(PARAM_ID_LAST_BLOCK_TIME)?)
     }
 
-    /// returns the transaction signer address
-    pub fn get_transaction_signer(&self) -> Result<Address, Error> {
+    /// returns the message sender address
+    pub fn get_message_sender(&self) -> Result<Address, Error> {
         let data = self.api.get_param(PARAM_ID_TRANSACTION_SIGNER)?;
         Address::from_bytes(&data)
     }

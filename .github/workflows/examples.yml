@@ -12,7 +12,7 @@ jobs:
   testing:
     strategy:
       matrix:
-        examples: [hello_world, token]
+        examples: [hello_world, erc20]
 
     runs-on: ubuntu-latest
     steps:
