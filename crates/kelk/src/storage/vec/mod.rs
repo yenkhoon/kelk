@@ -27,7 +27,7 @@ impl<'a, T: Codec> StorageVec<'a, T> {
     /// creates and store a new instance of Storage Vector at the given offset
     pub fn create(storage: &'a Storage, capacity: u32) -> Result<Self, Error> {
         let offset = storage.allocate(Header::PACKED_LEN)?;
-        let data_offset = storage.allocate(T::PACKED_LEN * capacity as usize)?;
+        let data_offset = storage.allocate(T::PACKED_LEN * capacity)?;
         let header = Header::new::<T>(capacity, data_offset);
         storage.write(offset, &header)?;
 
@@ -105,7 +105,7 @@ impl<'a, T: Codec> StorageVec<'a, T> {
         let mut offset = self.header.data_offset;
         for v in slice {
             self.storage.write(offset, v)?;
-            offset += T::PACKED_LEN as u32;
+            offset += T::PACKED_LEN;
         }
 
         // update header

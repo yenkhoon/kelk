@@ -8,7 +8,7 @@
 /// in big-endian (network) byte order.
 pub trait Codec {
     /// Borrows `self` and pack into `bytes` using big-endian representation.
-    const PACKED_LEN: usize;
+    const PACKED_LEN: u32;
 
     /// Returns the memory representation of this type as a byte array in big-endian (network) byte order.
     fn to_bytes(&self, bytes: &mut [u8]);
@@ -20,18 +20,18 @@ pub trait Codec {
 macro_rules! impl_codec_for_integer {
     ($type:ty, $size:expr) => {
         impl Codec for $type {
-            const PACKED_LEN: usize = $size;
+            const PACKED_LEN: u32 = $size;
 
             #[inline]
             fn to_bytes(&self, bytes: &mut [u8]) {
-                debug_assert_eq!(bytes.len(), Self::PACKED_LEN);
+                debug_assert_eq!(bytes.len(), Self::PACKED_LEN as usize);
 
                 bytes.copy_from_slice(&self.to_be_bytes());
             }
 
             #[inline]
             fn from_bytes(bytes: &[u8]) -> Self {
-                debug_assert_eq!(bytes.len(), Self::PACKED_LEN);
+                debug_assert_eq!(bytes.len(), Self::PACKED_LEN as usize);
 
                 let arr = bytes.try_into().expect("invalid data");
                 Self::from_be_bytes(arr)
@@ -43,20 +43,20 @@ macro_rules! impl_codec_for_integer {
 macro_rules! impl_codec_for_array {
     ($type:ty, $size:expr) => {
         impl Codec for $type {
-            const PACKED_LEN: usize = $size;
+            const PACKED_LEN: u32 = $size;
 
             #[inline]
             fn to_bytes(&self, bytes: &mut [u8]) {
-                debug_assert_eq!(bytes.len(), Self::PACKED_LEN);
+                debug_assert_eq!(bytes.len(), Self::PACKED_LEN as usize);
 
                 bytes.copy_from_slice(self);
             }
 
             #[inline]
             fn from_bytes(bytes: &[u8]) -> Self {
-                debug_assert_eq!(bytes.len(), Self::PACKED_LEN);
+                debug_assert_eq!(bytes.len(), Self::PACKED_LEN as usize);
 
-                let mut arr = [0; Self::PACKED_LEN];
+                let mut arr = [0; Self::PACKED_LEN as usize];
                 arr.copy_from_slice(bytes);
                 arr
             }
@@ -109,7 +109,7 @@ impl_codec_for_array!([u8; 31], 31);
 impl_codec_for_array!([u8; 32], 32);
 
 impl Codec for bool {
-    const PACKED_LEN: usize = 1;
+    const PACKED_LEN: u32 = 1;
 
     #[inline]
     fn to_bytes(&self, bytes: &mut [u8]) {
@@ -137,8 +137,8 @@ mod tests {
         let v1 = 0xabcdef;
         let v2 = 0xabcdefabcdef;
 
-        let mut b1 = [0; i32::PACKED_LEN];
-        let mut b2 = [0; i64::PACKED_LEN];
+        let mut b1 = [0; i32::PACKED_LEN as usize];
+        let mut b2 = [0; i64::PACKED_LEN as usize];
 
         v1.to_bytes(&mut b1);
         v2.to_bytes(&mut b2);
@@ -175,7 +175,7 @@ mod tests {
             b: [1, 2, 3],
         };
 
-        let mut b1 = [0; Foo::PACKED_LEN];
+        let mut b1 = [0; Foo::PACKED_LEN as usize];
 
         foo.to_bytes(&mut b1);
         assert_eq!(Foo::from_bytes(&b1), foo);

@@ -105,18 +105,18 @@ pub fn derive_codec(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let expanded = quote! {
         impl #impl_generics Codec for #name #ty_generics #where_clause {
 
-            const PACKED_LEN: usize = #packed_len_body;
+            const PACKED_LEN: u32 = #packed_len_body;
 
             #[inline]
             fn to_bytes(&self, bytes: &mut [u8]) {
-                debug_assert_eq!(bytes.len(), Self::PACKED_LEN);
+                debug_assert_eq!(bytes.len(), Self::PACKED_LEN as usize);
 
                 #to_bytes_body
             }
 
             #[inline]
             fn from_bytes(bytes: &[u8]) -> Self {
-                debug_assert_eq!(bytes.len(), Self::PACKED_LEN);
+                debug_assert_eq!(bytes.len(), Self::PACKED_LEN as usize);
 
                 Self { #from_bytes_body }
             }
@@ -224,7 +224,7 @@ fn codegen_struct<T: ToTokens>(fields: &[(&Type, T)]) -> (TokenStream, TokenStre
     for field in fields.iter() {
         let ty = field.0;
         let name = &field.1;
-        let struct_size = quote! { <#ty as Codec>::PACKED_LEN };
+        let struct_size = quote! { <#ty as Codec>::PACKED_LEN as usize};
         let end_offset = quote! { #beg_offset + #struct_size };
         let bytes_slice = quote! { bytes[#beg_offset..#end_offset] };
 

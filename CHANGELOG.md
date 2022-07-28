@@ -8,7 +8,6 @@
 - Adding `allocate` for storage module and basic storage read/write functions
 - Adding `Storage` and `Blockchain` modules
 
-
 ## Version 0.2
 
 - Defining Memory Pointer for managing memory allocation in WASM's linear memory.

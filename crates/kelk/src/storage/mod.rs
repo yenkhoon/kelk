@@ -57,7 +57,7 @@ impl Storage {
             allocation_offset: 0,
         };
         storage.stack_size = 32;
-        storage.allocation_offset = (storage.stack_size as u32 * Offset::PACKED_LEN as u32) + 8;
+        storage.allocation_offset = (storage.stack_size as u32 * Offset::PACKED_LEN) + 8;
 
         storage.write_u16(0, &1)?; // version
         storage.write_u16(2, &storage.stack_size)?;
@@ -81,7 +81,7 @@ impl Storage {
         let stack_size = storage.read_u16(2)?;
 
         storage.stack_size = stack_size;
-        storage.allocation_offset = (storage.stack_size as u32 * Offset::PACKED_LEN as u32) + 8;
+        storage.allocation_offset = (storage.stack_size as u32 * Offset::PACKED_LEN) + 8;
 
         Ok(storage)
     }
@@ -90,15 +90,32 @@ impl Storage {
         &mut self.api
     }
 
-    ///
-    pub fn allocate(&self, length: usize) -> Result<Offset, Error> {
+    /// Allocates storage space with the specific `length` and returns the
+    /// offset of allocated space in the storage file.
+    pub fn allocate(&self, length: u32) -> Result<Offset, Error> {
         let cur_free_pos = self.read(self.allocation_offset)?;
-        let next_free_pos = cur_free_pos + length as u32;
+        let next_free_pos = cur_free_pos + length;
 
         // Updating allocation pos
         self.write(self.allocation_offset, &next_free_pos)?;
 
         Ok(cur_free_pos)
+    }
+
+    /// Deallocates the storage space at the specific `offset` and `length`
+    pub fn deallocate(&self, _offset: Offset, _length: u32) -> Result<(), Error> {
+        todo!()
+    }
+
+    /// Reallocates the the storage space at the given `offset` from `length` to `new_length`
+    /// and returns the new offset of reallocated area.
+    pub fn reallocate(
+        &self,
+        _offset: Offset,
+        _length: u32,
+        _new_length: u32,
+    ) -> Result<Offset, Error> {
+        todo!()
     }
 
     fn stack_offset(&self, stack_index: u16) -> Result<Offset, Error> {
@@ -108,7 +125,7 @@ impl Storage {
 
         // stack_offset = (stack_index * 4) + 4
         let header_size = 4;
-        Ok(((stack_index as usize * Offset::PACKED_LEN) + header_size) as Offset)
+        Ok((stack_index as u32 * Offset::PACKED_LEN) + header_size)
     }
 
     ///
@@ -139,7 +156,7 @@ impl Storage {
     /// Note that `T` should be `Codec`.
     #[inline]
     pub(crate) fn read<T: Codec>(&self, offset: u32) -> Result<T, Error> {
-        let mut bytes = alloc::vec![0; T::PACKED_LEN];
+        let mut bytes = alloc::vec![0; T::PACKED_LEN as usize];
         self.api.read(offset, &mut bytes)?;
         let value = T::from_bytes(&bytes);
         Ok(value)
@@ -149,7 +166,7 @@ impl Storage {
     /// Note that `T` should be `Codec`.
     #[inline]
     pub(crate) fn write<T: Codec>(&self, offset: Offset, value: &T) -> Result<(), Error> {
-        let mut bytes = alloc::vec![0; T::PACKED_LEN];
+        let mut bytes = alloc::vec![0; T::PACKED_LEN as usize];
         value.to_bytes(&mut bytes);
         Ok(self.api.write(offset, &bytes)?)
     }

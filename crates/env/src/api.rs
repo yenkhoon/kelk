@@ -8,11 +8,11 @@ use alloc::vec::Vec;
 /// the storage APIs that should be provided by the host.
 /// It can't be copied or cloned since it doesn't have Copy and Clone traits.
 pub trait StorageAPI {
-    /// This API requests the host to read data from the storage file
-    /// at the given `offset` up to the given `length`.
+    /// This API requests the host to read the slice of `data` from the storage file
+    /// at the given `offset`.
     fn read(&self, offset: u32, data: &mut [u8]) -> Result<(), HostError>;
 
-    /// This API requests the host to write `data` into the storage file
+    /// This API requests the host to write  the slice of `data` into the storage file
     /// at the given `offset`
     fn write(&self, offset: u32, data: &[u8]) -> Result<(), HostError>;
 
