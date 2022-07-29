@@ -1,4 +1,4 @@
-//! The context for running contract actor
+//! Mocking the `Context` for testing purpose
 
 use crate::{
     blockchain::{mock::MockBlockchain, Blockchain},

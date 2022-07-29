@@ -86,6 +86,21 @@ pub fn kelk_entry(
     item
 }
 
+/// Derives `Codec` trait for the given `struct`.
+///
+/// # Examples
+///
+/// ```
+/// use kelk::Codec;
+/// use kelk::storage::codec::Codec;
+///
+/// #[derive(Codec)]
+/// struct Test {
+///     a: u32,
+/// }
+///
+/// assert_eq!(Test::PACKED_LEN, 4);
+/// ```
 #[proc_macro_derive(Codec)]
 pub fn derive_codec(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     // Parse the input tokens into a syntax tree.
@@ -123,7 +138,6 @@ pub fn derive_codec(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
         }
     };
 
-    //panic!("{}" , expanded.to_string());
     // Hand the output tokens back to the compiler.
     proc_macro::TokenStream::from(expanded)
 }
