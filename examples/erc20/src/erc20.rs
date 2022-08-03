@@ -126,7 +126,7 @@ impl<'a> ERC20<'a> {
                 .insert(PairAddress(owner.clone(), spender.clone()), *amount)?;
             Ok(())
         } else {
-            Ok(())
+            Err(Error::InvalidMsg)
         }
     }
 
@@ -150,6 +150,8 @@ impl<'a> ERC20<'a> {
 
     pub fn mint(&mut self, addr: &Address, amount: &i64) -> Result<(), Error> {
         if addr.ne(&ADDRESS_ZERO) {
+            let tx_balance = self.balances.find(addr).unwrap().unwrap_or(0);
+            self.balances.insert(addr.clone(), tx_balance + amount)?;
             self.total_supply += amount;
         }
         Ok(())
