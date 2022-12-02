@@ -10,7 +10,7 @@ pub const ADDRESS_SIZE: usize = 21;
 /// This represents address zero
 pub const ADDRESS_ZERO: Address = Address([0; 21]);
 
-/// Address type in Zarb blockchain
+/// Address type in Pactus blockchain
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd, Codec)]
 pub struct Address([u8; ADDRESS_SIZE]);
 

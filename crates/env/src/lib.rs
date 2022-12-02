@@ -1,4 +1,4 @@
-//! Kelk-env is a Low-level interface for interacting with Tanour (Wasm executor) in Zarb blockchain.
+//! Kelk-env is a Low-level interface for interacting with Tanour (Wasm executor) in Pactus blockchain.
 //!
 #![no_std]
 #![deny(

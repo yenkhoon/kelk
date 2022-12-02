@@ -3,7 +3,7 @@ name = "erc20"
 version = "0.1.0"
 edition = "2021"
 publish = false
-authors = ["Zarb development team <admin@zarb.network>"]
+authors = ["Pactus blockchain <admin@pactus.org>"]
 
 
 [dependencies]

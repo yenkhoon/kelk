@@ -11,7 +11,7 @@ use core::any::Any;
 use minicbor::{Decode, Encode};
 
 #[cfg(not(test))]
-#[link(wasm_import_module = "zarb")]
+#[link(wasm_import_module = "pactus")]
 extern "C" {
     /// writes data at given offset of storage file.
     ///

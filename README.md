@@ -1,6 +1,6 @@
 # Kelk
 
-Use Kelk to write the contract actor for [Zarb](https://zarb.network/) blockchain based on WebAssembly.
+Use Kelk to write the contract actor for [Pactus](https://pactus.org/) blockchain based on WebAssembly.
 
 ## Building
 

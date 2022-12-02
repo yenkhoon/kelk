@@ -2,11 +2,11 @@
 name = "kelk-derive"
 version = "0.2.1"
 edition = "2021"
-authors = ["Zarb development team <admin@zarb.network>"]
+authors = ["Pactus blockchain <admin@pactus.org>"]
 license = "MIT"
-homepage = "https://zarb.network/"
-repository = "https://github.com/zarbchan/kelk"
-description = "Kelk-derive contains derive macros for auto-generated code used in Zarb blockchain."
+homepage = "https://pactus.org/"
+repository = "https://github.com/pactus-project/kelk"
+description = "Kelk-derive contains derive macros for auto-generated code used in Pactus blockchain."
 
 [lib]
 proc-macro = true

@@ -1,4 +1,4 @@
-//! Kelk-lib is the standard library for wasm based contracts in [Zarb](https://zarb.network) blockchain.
+//! Kelk-lib is the standard library for wasm based contracts in [Pactus](https://pactus.org) blockchain.
 //!
 #![no_std]
 #![deny(
