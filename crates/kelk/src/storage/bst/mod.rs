@@ -21,7 +21,10 @@ where
     V: Codec,
 {
     storage: &'a Storage,
-    offset: Offset,
+    // Offset of the header in the storage file.
+    header_offset: Offset,
+    // In memory instance of the header.
+    // Any change in the header should be flushed into the storage file
     header: Header,
     _phantom: PhantomData<(K, V)>,
 }
@@ -33,20 +36,20 @@ where
 {
     /// Creates a new instance of `StorageBST`.
     pub fn create(storage: &'a Storage) -> Result<Self, Error> {
-        let offset = storage.allocate(Header::PACKED_LEN)?;
+        let header_offset = storage.allocate(Header::PACKED_LEN)?;
         let header = Header::new::<K, V>();
-        storage.write(offset, &header)?;
+        storage.write(header_offset, &header)?;
 
         Ok(StorageBST {
             storage,
-            offset,
+            header_offset,
             header,
             _phantom: PhantomData,
         })
     }
 
-    /// Loads the Storage Binary Search Tree
-    pub fn load(storage: &'a Storage, offset: u32) -> Result<Self, Error> {
+    /// Try to load the `StorageBST` at the given offset in the storage file.
+    pub fn load(storage: &'a Storage, offset: Offset) -> Result<Self, Error> {
         let header: Header = storage.read(offset)?;
 
         debug_assert_eq!(header.key_len, K::PACKED_LEN as u16);
@@ -54,29 +57,43 @@ where
 
         Ok(StorageBST {
             storage,
-            offset,
+            header_offset: offset,
             header,
             _phantom: PhantomData,
         })
     }
-    /// Returns the offset of `StorageLinkedList` in the storage file.
+
+    /// Returns the offset of `StorageBST` in the storage file.
+    #[cfg_attr(feature = "inline-more", inline)]
     pub fn offset(&self) -> Offset {
-        self.offset
+        self.header_offset
+    }
+
+    /// Returns the number of elements in the `StorageBST`.
+    #[cfg_attr(feature = "inline-more", inline)]
+    pub fn len(&self) -> u32 {
+        self.header.items
+    }
+
+    /// Returns `true` if the `StorageBST` contains no elements.
+    #[cfg_attr(feature = "inline-more", inline)]
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
     }
 
     /// Inserts a key-value pair into the tree.
     /// If the map did not have this key present, None is returned.
     /// If the map did have this key present, the value is updated, and the old value is returned.
     pub fn insert(&mut self, key: K, value: V) -> Result<Option<V>, Error> {
-        if self.header.count == 0 {
+        if self.header.items == 0 {
             // create a root node
             let offset = self.storage.allocate(Node::<K, V>::PACKED_LEN)?;
             let root = Node::new(key, value);
 
-            self.header.count = 1;
+            self.header.items = 1;
             self.header.root_offset = offset;
 
-            self.storage.write(self.offset, &self.header)?;
+            self.storage.write(self.header_offset, &self.header)?;
             self.storage.write(offset, &root)?;
             Ok(None)
         } else {
@@ -97,8 +114,8 @@ where
                         let new_node = Node::new(key, value);
 
                         // update header
-                        self.header.count += 1;
-                        self.storage.write(self.offset, &self.header)?;
+                        self.header.items += 1;
+                        self.storage.write(self.header_offset, &self.header)?;
 
                         // update parent node
                         node.left = new_offset;
@@ -115,8 +132,8 @@ where
                         let new_node = Node::new(key, value);
 
                         // update header
-                        self.header.count += 1;
-                        self.storage.write(self.offset, &self.header)?;
+                        self.header.items += 1;
+                        self.storage.write(self.header_offset, &self.header)?;
 
                         // update parent node
                         node.right = new_offset;
@@ -135,7 +152,7 @@ where
 
     /// Returns the value corresponding to the key. If the key doesn't exists, it returns None.
     pub fn find(&self, key: &K) -> Result<Option<V>, Error> {
-        if self.header.count == 0 {
+        if self.header.items == 0 {
             return Ok(None);
         }
 
@@ -176,12 +193,14 @@ mod tests {
         let storage = mock_storage(1024);
         let mut bst_1 = StorageBST::<i32, i64>::create(&storage).unwrap();
 
+        assert!(bst_1.is_empty());
         assert_eq!(None, bst_1.insert(1, 10).unwrap());
         assert_eq!(None, bst_1.insert(3, 30).unwrap());
         assert_eq!(None, bst_1.insert(2, 20).unwrap());
         assert_eq!(Some(10), bst_1.insert(1, 100).unwrap());
 
         let bst_2 = StorageBST::<i32, i64>::load(&storage, bst_1.offset()).unwrap();
+        assert_eq!(3, bst_2.len());
         assert_eq!(Some(20), bst_2.find(&2).unwrap());
         assert_eq!(None, bst_2.find(&4).unwrap());
         assert_eq!(Some(30), bst_2.find(&3).unwrap());

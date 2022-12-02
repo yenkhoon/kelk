@@ -17,3 +17,4 @@ minicbor = { version = "0.18", features = ["half", "derive", "alloc"] }
 doc-comment = "0.3"
 rand = { version = "0.8", features = ["small_rng"], default-features = false }
 wee_alloc = { version = "0.4", default-features = false }
+fnv = { version = "1.0.7", default-features = false }

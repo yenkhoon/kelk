@@ -3,6 +3,7 @@
 pub mod bst;
 pub mod codec;
 pub mod error;
+pub mod hash_table;
 pub mod linked_list;
 pub mod mock;
 pub mod str;
@@ -10,6 +11,9 @@ pub mod vec;
 
 /// is an alias for representing the offset of the allocated space inside the storage file.
 pub type Offset = u32;
+
+/// is the size of offset in bytes.
+const OFFSET_SIZE: u32 = 4;
 
 use self::codec::Codec;
 use self::error::Error;
@@ -155,7 +159,7 @@ impl Storage {
     /// Reads `T` from the storage file at the given `offset`.
     /// Note that `T` should be `Codec`.
     #[inline]
-    pub(crate) fn read<T: Codec>(&self, offset: u32) -> Result<T, Error> {
+    pub(crate) fn read<T: Codec>(&self, offset: Offset) -> Result<T, Error> {
         let mut bytes = alloc::vec![0; T::PACKED_LEN as usize];
         self.api.read(offset, &mut bytes)?;
         let value = T::from_bytes(&bytes);
@@ -173,7 +177,7 @@ impl Storage {
 
     /// Reads slice of bytes of size `length` from the storage file at the given `offset`.
     #[inline]
-    pub(crate) fn read_bytes(&self, offset: u32, data: &mut [u8]) -> Result<(), Error> {
+    pub(crate) fn read_bytes(&self, offset: Offset, data: &mut [u8]) -> Result<(), Error> {
         Ok(self.api.read(offset, data)?)
     }
 

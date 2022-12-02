@@ -40,7 +40,7 @@ impl<'a, T: Codec> StorageVec<'a, T> {
     }
 
     /// load the Storage Vector
-    pub fn load(storage: &'a Storage, offset: u32) -> Result<Self, Error> {
+    pub fn load(storage: &'a Storage, offset: Offset) -> Result<Self, Error> {
         let header: Header = storage.read(offset)?;
 
         debug_assert_eq!(header.value_len, T::PACKED_LEN as u16);

@@ -2,12 +2,12 @@
 //!
 //!
 
-use alloc::string::{String, ToString};
-
 use super::{error::Error, vec::StorageVec, Offset, Storage};
+use alloc::string::{String, ToString};
 
 /// Storage String
 pub struct StorageString<'a> {
+    // A vector of UTF-8 bytes,
     vec: StorageVec<'a, u8>,
 }
 
@@ -20,7 +20,7 @@ impl<'a> StorageString<'a> {
     }
 
     /// load the Storage Vector
-    pub fn load(storage: &'a Storage, offset: u32) -> Result<Self, Error> {
+    pub fn load(storage: &'a Storage, offset: Offset) -> Result<Self, Error> {
         let vec = StorageVec::load(storage, offset)?;
 
         Ok(StorageString { vec })

@@ -1,6 +1,6 @@
 //! Mocking the storage for testing purpose
 
-use super::Storage;
+use super::{Offset, Storage};
 use alloc::boxed::Box;
 use alloc::vec::Vec;
 use core::{any::Any, cell::RefCell, result::Result};
@@ -20,7 +20,7 @@ impl MockStorage {
 }
 
 impl StorageAPI for MockStorage {
-    fn read(&self, offset: u32, data: &mut [u8]) -> Result<(), HostError> {
+    fn read(&self, offset: Offset, data: &mut [u8]) -> Result<(), HostError> {
         if offset as usize + data.len() > self.storage.borrow().len() {
             return Err(HostError { code: -1 });
         }
@@ -34,7 +34,7 @@ impl StorageAPI for MockStorage {
         Ok(())
     }
 
-    fn write(&self, offset: u32, data: &[u8]) -> Result<(), HostError> {
+    fn write(&self, offset: Offset, data: &[u8]) -> Result<(), HostError> {
         if offset as usize + data.len() > self.storage.borrow().len() {
             return Err(HostError { code: -1 });
         }
