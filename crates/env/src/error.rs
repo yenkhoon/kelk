@@ -1,6 +1,6 @@
-//! Define the Host error.
+//! Host error definition.
 
-/// Error raised by the host
+/// Error raised by the host.
 #[derive(Debug)]
 pub struct HostError {
     /// The error code

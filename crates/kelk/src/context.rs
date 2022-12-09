@@ -3,7 +3,7 @@
 use crate::{blockchain::Blockchain, storage::Storage};
 
 /// `Context` holds the references to the storage and blockchain objects.
-/// It can be easily mocked for the testing environment.
+/// This can be easily mocked for the testing environment.
 pub struct Context<'a> {
     /// A reference to the instance Storage
     pub storage: &'a Storage,

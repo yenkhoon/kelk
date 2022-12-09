@@ -1,6 +1,6 @@
 [package]
 name = "kelk-allocator"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 authors = ["Pactus blockchain <admin@pactus.org>"]
 license = "MIT"

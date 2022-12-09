@@ -3,7 +3,7 @@
 use alloc::string::String;
 use core::fmt::Debug;
 
-/// A general list of Storage Binary Tree error
+/// A general list of Blockchain error
 #[derive(Debug)]
 pub enum Error {
     /// Host error code

@@ -45,7 +45,7 @@ macro_rules! impl_num {
 
 /// Storage object
 pub struct Storage {
-    /// Storage APIs that are provided by the host
+    // Storage APIs that are provided by the host
     api: Box<dyn StorageAPI>,
 
     stack_size: u16,
@@ -70,7 +70,7 @@ impl Storage {
         Ok(storage)
     }
 
-    ///
+    /// loads the storage instance
     pub fn load(api: Box<dyn StorageAPI>) -> Result<Self, Error> {
         let mut storage = Storage {
             api,
