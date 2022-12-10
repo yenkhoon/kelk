@@ -88,7 +88,6 @@ class Crate:
             print(f"In dry-run: not publishing crate `{self.name}`")
             command.append("--dry-run")
 
-        command.append("--dry-run")
         if self.verbose:
             print(*command)
         output = subprocess.run(command, check=True)
@@ -137,11 +136,11 @@ class Workspace:
 
         for crate in self.crates:
             if ver != crate.version:
-                print(f"{crate.name} version should be {ver}")
+                print(f"[ERROR] {crate.name} version should be {ver}")
                 return 1
 
             if crate.is_already_published():
-                print(f"{crate.name} is already published with version {ver}")
+                print(f"[ERROR] {crate.name} is already published with version {ver}")
                 return 2
 
         return 0
@@ -190,7 +189,7 @@ def main():
     )
 
     publish_cmd = subparsers.add_parser(
-        "publish", help="Publish Wasmer crates to crates.io."
+        "publish", help="Publish Kelk crates to crates.io."
     )
     publish_cmd.add_argument(
         "-v",
@@ -201,7 +200,7 @@ def main():
     )
     publish_cmd.add_argument(
         "--dry-run",
-        default=True,
+        default=False,
         action="store_true",
         help="""Run the script without actually publishing anything to
         crates.io""",

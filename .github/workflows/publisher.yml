@@ -24,4 +24,4 @@ jobs:
       - name: publish the crates
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
-        run: python3 .github/workflows/publish.py publish --dry-run -v
+        run: python3 .github/workflows/publish.py publish -v
