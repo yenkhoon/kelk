@@ -2,7 +2,7 @@
 //!
 //! `StorageHashTable` is an implementation of hash table that instead of using
 //! Random Access Memory (RAM), it uses storage file. Therefore it's permanently
-//!  stored inside contract's storage.
+//! stored inside contract's storage.
 //!
 
 mod header;
@@ -20,7 +20,7 @@ fn compute_hash<K: Hash>(key: &K) -> u32 {
     key.hash(&mut state);
     state.finish() as u32
 }
-/// The instance of `StorageLinkedList`
+/// The instance of `StorageHashTable`
 pub struct StorageHashTable<'a, K, V>
 where
     K: Codec + Ord + Hash + Eq,

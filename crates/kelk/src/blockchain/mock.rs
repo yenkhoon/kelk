@@ -10,6 +10,7 @@ use core::result::Result;
 use kelk_env::{BlockchainAPI, HostError};
 use rand::rngs::SmallRng;
 use rand::{Rng, SeedableRng};
+
 /// mocks the blockchain for testing purpose.
 pub struct MockBlockchain {
     map: BTreeMap<u32, Vec<u8>>,
