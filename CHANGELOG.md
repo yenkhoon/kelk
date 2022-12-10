@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## Version 0.4.0
+
 ## Version 0.3.0
 
 - Introducing `Context` and `OwnedContext` structs for dependency injection at runtime

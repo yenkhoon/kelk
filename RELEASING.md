@@ -24,7 +24,7 @@ git tag -s -a v0.4.0 -m "Version 0.4.0"
 
 ## Checking
 
-Check the crates before creating tag and publishing.
+Check the crates before creating tag and publishing:
 
 ```
 python3 .github/workflows/publish.py check -v
@@ -34,7 +34,7 @@ python3 .github/workflows/publish.py publish --dry-run -v
 ## Publishing
 
 Pushing a tag into gitlab repository will automatically
-publish the crates into [crates.io](https://crates.io/search?q=kelk).
+publish the crates into [crates.io](https://crates.io/search?q=kelk):
 
 ```
 git push origin v0.4.0
@@ -43,10 +43,10 @@ git push origin v0.4.0
 ## Bumping version
 
 After publishing the crates, the version should update.
-Update the version inside the `Cargo.toml` files by increasing the minor version of the crate.
-For example from `0.0.0` to `0.1.0`
+Update the version inside the `Cargo.toml` files to `0.5.0`
 
 Create a commit and push it to main branch:
+
 ```
 git commit -m "Bumping version to 0.5.0"
 git push origin HEAD
