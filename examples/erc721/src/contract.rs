@@ -25,7 +25,10 @@ pub fn process(ctx: Context, msg: ProcMsg) -> Result<(), Error> {
     match &msg {
         ProcMsg::Transfer { to, amount } => token.transfer(to, amount),
         ProcMsg::TransferFrom { from, to, amount } => token.transfer_from(from, to, amount),
-        ProcMsg::Approve { to, amount } => token.approve(to, amount),
+        ProcMsg::Approved { to, token_id } => token.approve(to, token_id),
+        ProcMsg::ApprovedForAll { operator, approved } => {
+            token.set_approval_for_all(operator, approved)
+        }
         ProcMsg::Mint { addr, amount } => token.mint(addr, amount),
         ProcMsg::Burn { addr, amount } => token.burn(addr, amount),
     }
@@ -46,8 +49,14 @@ pub fn query(ctx: Context, msg: QueryMsg) -> Result<QueryRsp, Error> {
         QueryMsg::Balance { addr } => QueryRsp::Balance {
             res: token.balance_of(addr)?,
         },
-        QueryMsg::Approve { to, token_id } => QueryRsp::Allowance {
-            res: token.approve(to, token_id),
+        QueryMsg::Approved { token_id } => QueryRsp::Approved {
+            res: token.get_approved(token_id)?,
+        },
+        QueryMsg::ApprovedForAll { operator, owner } => QueryRsp::ApprovedForAll {
+            res: token.is_approved_for_all(owner, operator)?,
+        },
+        QueryMsg::OwnerOf { token_id } => QueryRsp::OwnerOf {
+            res: token.owner_of(token_id)?,
         },
     };
 
