@@ -1,0 +1,30 @@
+[package]
+name = "erc721"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+kelk = { path = "../../crates/kelk" }
+minicbor = { version = "0.18", features = ["half", "derive"] }
+wee_alloc = { version = "0.4", default-features = false }
+rand="0.3.14"
+
+[lib]
+name = "erc721"
+crate-type = ["cdylib", "rlib"]
+
+[profile.release]
+opt-level = 3
+debug = false
+rpath = false
+lto = true
+debug-assertions = false
+codegen-units = 1
+panic = 'abort'
+incremental = false
+overflow-checks = true
+
+[profile.dev]
+panic = "abort"
