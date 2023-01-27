@@ -5,7 +5,6 @@ use kelk::storage::bst::StorageBST;
 use kelk::storage::codec::Codec;
 use kelk::storage::str::StorageString;
 use kelk::Codec;
-use rand::Rng;
 
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd, Codec)]
 struct PairAddress(Address, Address);
@@ -24,7 +23,7 @@ pub(crate) struct ERC721<'a> {
     token_approvals: StorageBST<'a, i64, Address>,
 
     // Mapping from owner to operator approvals
-    operator_approvals: StorageBST<'a, Address, bool>,
+    operator_approvals: StorageBST<'a, PairAddress, bool>,
 
     name: StorageString<'a>,
     symbol: StorageString<'a>,
@@ -36,22 +35,13 @@ impl<'a> ERC721<'a> {
         token_name: &str,
         token_symbol: &str,
     ) -> Result<Self, Error> {
-        let mut balances = StorageBST::create(ctx.storage)?;
+        let balances = StorageBST::create(ctx.storage)?;
         let token_approvals = StorageBST::create(ctx.storage)?;
         let operator_approvals = StorageBST::create(ctx.storage)?;
         let owners = StorageBST::create(ctx.storage)?;
         let mut name = StorageString::create(ctx.storage, token_name.len() as u32)?;
         let mut symbol = StorageString::create(ctx.storage, token_symbol.len() as u32)?;
 
-        let owner = ctx.blockchain.get_message_sender()?;
-
-        let mut rng = rand::thread_rng();
-        let token_id: i64 = rng.gen();
-
-        balances.insert(owner, token_id).unwrap();
-        token_approvals.insert(token_id, owner).unwrap();
-        operator_approvals.insert(owner, true).unwrap();
-        owners.insert(token_id, owner).unwrap();
         name.set_string(token_name)?;
         symbol.set_string(token_symbol)?;
 
@@ -125,7 +115,11 @@ impl<'a> ERC721<'a> {
 
     pub fn approve(&mut self, to: &Address, token_id: &i64) -> Result<(), Error> {
         let owner: Address = self.ctx.blockchain.get_message_sender()?;
-        self._approved(&to, token_id)?;
+
+        let balance = self.balances.find(&owner).unwrap().unwrap_or(0);
+        if balance.ne(&0) {
+            self._approved(&to, token_id)?;
+        }
         Ok(())
     }
 
@@ -136,6 +130,47 @@ impl<'a> ERC721<'a> {
         } else {
             Err(Error::InvalidMsg)
         }
+    }
+
+    pub fn get_approved(&self, token_id: &i64) -> Result<Address, Error> {
+        let approved = self.token_approvals.find(token_id).unwrap();
+        Ok(approved.unwrap())
+    }
+
+    pub fn set_approval_for_all(
+        &mut self,
+        operator: &Address,
+        approved: &bool,
+    ) -> Result<(), Error> {
+        let owner = self.ctx.blockchain.get_message_sender()?;
+        let balance = self.balances.find(&owner).unwrap().unwrap_or(0);
+        if balance.ne(&0) {
+            self._setted_approval_for_all(&owner, operator, approved)?;
+        }
+
+        Ok(())
+    }
+
+    fn _setted_approval_for_all(
+        &mut self,
+        owner: &Address,
+        operator: &Address,
+        approved: &bool,
+    ) -> Result<(), Error> {
+        self.operator_approvals.insert(
+            PairAddress(owner.clone(), operator.clone()),
+            approved.clone(),
+        )?;
+        Ok(())
+    }
+
+    pub fn is_approved_for_all(&self, owner: &Address, operator: &Address) -> Result<bool, Error> {
+        let approved = self
+            .operator_approvals
+            .find(&PairAddress(owner.clone(), operator.clone()))
+            .unwrap()
+            .unwrap_or(false);
+        Ok(approved)
     }
 
     pub fn transfer_from(
