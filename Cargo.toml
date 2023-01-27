@@ -4,6 +4,5 @@ members = [
     "crates/derive",
     "crates/env",
     "crates/kelk",
-    "examples/erc721",
 ]
 exclude = ["examples"]
