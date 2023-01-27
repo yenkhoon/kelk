@@ -20,20 +20,27 @@ pub enum ProcMsg {
         amount: i64,
     },
     #[n(2)]
-    Approve {
+    Approved {
         #[n(0)]
         to: Address,
         #[n(1)]
         token_id: i64,
     },
     #[n(3)]
+    ApprovedForAll {
+        #[n(0)]
+        operator: Address,
+        #[n(1)]
+        approved: bool,
+    },
+    #[n(4)]
     Mint {
         #[n(0)]
         addr: Address,
         #[n(1)]
         amount: i64,
     },
-    #[n(4)]
+    #[n(5)]
     Burn {
         #[n(0)]
         addr: Address,
@@ -47,8 +54,6 @@ pub struct InstantiateMsg {
     pub name: String,
     #[n(1)]
     pub symbol: String,
-    #[n(2)]
-    pub total_supply: i64,
 }
 
 #[derive(Clone, Debug, Encode, Decode)]
@@ -63,13 +68,21 @@ pub enum QueryMsg {
         addr: Address,
     },
     #[n(3)]
-    TotalSupply,
-    #[n(4)]
-    Allowance {
+    Approved {
         #[n(0)]
-        owner: Address,
+        token_id: i64,
+    },
+    #[n(4)]
+    ApprovedForAll {
+        #[n(0)]
+        operator: Address,
         #[n(1)]
-        spender: Address,
+        owner: Address,
+    },
+    #[n(5)]
+    OwnerOf {
+        #[n(0)]
+        token_id: i64,
     },
 }
 
@@ -91,13 +104,18 @@ pub enum QueryRsp {
         res: i64,
     },
     #[n(3)]
-    TotalSupply {
+    Approved {
         #[n(2)]
-        res: i64,
+        res: Address,
     },
     #[n(4)]
-    Allowance {
+    ApprovedForAll {
         #[n(0)]
-        res: i64,
+        res: bool,
+    },
+    #[n(5)]
+    OwnerOf {
+        #[n(0)]
+        res: Address,
     },
 }
