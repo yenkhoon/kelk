@@ -116,7 +116,7 @@ impl<'a> ERC721<'a> {
     pub fn approve(&mut self, to: &Address, token_id: &i64) -> Result<(), Error> {
         let owner: Address = self.ctx.blockchain.get_message_sender()?;
 
-        let balance = self.balances.find(&owner).unwrap().unwrap_or(0);
+        let balance = self.balances.find(&owner)?.unwrap_or(0);
         if balance.ne(&0) {
             self._approved(&to, token_id)?;
         }
