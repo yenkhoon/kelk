@@ -104,7 +104,7 @@ impl<'a> ERC721<'a> {
     }
 
     pub fn owner_of(&self, token_id: &i64) -> Result<Address, Error> {
-        let owner = self.owners.find(token_id).unwrap();
+        let owner = self.owners.find(token_id)?;
         Ok(owner.unwrap())
     }
 
