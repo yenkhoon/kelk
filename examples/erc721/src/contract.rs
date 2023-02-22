@@ -35,7 +35,7 @@ pub fn process(ctx: Context, msg: ProcMsg) -> Result<(), Error> {
 }
 
 /*
-query executes the contract associated with the addr with the given input
+query executes the contract with the given `msg`
 as parameters while disallowing any modifications to the state during the call.
 */
 #[kelk_entry]
