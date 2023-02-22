@@ -99,7 +99,7 @@ impl<'a> ERC721<'a> {
     }
 
     pub fn balance_of(&self, addr: &Address) -> Result<i64, Error> {
-        let balance = self.balances.find(addr).unwrap().unwrap_or(0);
+        let balance = self.balances.find(addr)?.unwrap_or(0);
         Ok(balance)
     }
 
