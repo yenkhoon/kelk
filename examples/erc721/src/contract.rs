@@ -14,7 +14,7 @@ pub fn instantiate(ctx: Context, msg: InstantiateMsg) -> Result<(), Error> {
 }
 
 /*
-process executes the contract associated with the addr with the given input as
+process executes the contract with the given `msg` as
 parameters. It also handles any necessary value transfer required and takes
 the necessary steps to create accounts and reverses the state in case of an
 execution error or failed value transfer.
